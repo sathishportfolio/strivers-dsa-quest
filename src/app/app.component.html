@@ -1,0 +1,208 @@
+<div [ngClass]="isDarkMode ? 'darkMode mat-app-background' : 'lightMode mat-app-background'">
+  <!-- <mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>My Application</span>
+</mat-toolbar> -->
+
+  <mat-sidenav-container class="app-container">
+    <mat-sidenav #sidenav mode="side" opened>
+      <form class="sidebar-form">
+
+        <div class="main-content">
+          <!-- <mat-form-field>
+            <mat-select placeholder="Sort By" [(ngModel)]="selectedsortBy" name="selectedsortBy"
+              (selectionChange)="onSortChange($event.value)">
+              <mat-option *ngFor="let option of sortBy" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <mat-form-field>
+            <mat-select placeholder="Sort By" [(ngModel)]="selectedsortBy" name="selectedsortBy"
+              (selectionChange)="onSortChange($event.value)">
+              <mat-option *ngFor="let option of sortByOptions" [value]="option.key">
+                {{ option.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button matSuffix (click)="toggleSortDirection()" [attr.aria-label]="'Toggle sort direction'">
+            <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          </button>
+        </div>
+
+        <!-- <mat-form-field>
+          Reset Filter
+        </mat-form-field> -->
+
+        <!-- <mat-form-field>
+          Blind 75 like famous filters
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Search ...</mat-label>
+          <!-- <input matInput (keyup)="onSearch(input.value)" placeholder="" #input> -->
+
+          <input matInput [(ngModel)]="searchTerm" name="searchTerm" (keyup)="onSearch()" placeholder="">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-chip-grid #chipGrid1 aria-label="Difficulty">
+            <mat-chip-row *ngFor="let chip of selectedDifficultyChips" [removable]="true"
+              (removed)="removeDifficultyChip(chip)">
+              {{ chip }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+
+            <input #difficultyChipInput [formControl]="difficultyChipCtrl" [matChipInputFor]="chipGrid1"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matAutocomplete]="auto1"
+              (matChipInputTokenEnd)="addDifficultyChip($event)" placeholder="Difficulty" />
+          </mat-chip-grid>
+
+          <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="selectedDifficultyChip($event)">
+            <mat-option *ngFor="let option of filteredDifficultyOptions | async" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-chip-grid #chipGrid2 aria-label="Category">
+            <mat-chip-row *ngFor="let chip of selectedCategorychips" [removable]="true"
+              (removed)="removeCategoryChip(chip)">
+              {{ chip }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+
+            <input #CategoryChipInput [formControl]="categoryChipCtrl" [matChipInputFor]="chipGrid2"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matAutocomplete]="auto2"
+              (matChipInputTokenEnd)="addCategoryChip($event)" placeholder="Category" />
+          </mat-chip-grid>
+
+          <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="selectedCategoryChip($event)">
+            <mat-option *ngFor="let option of filteredCategoryOptions | async" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-chip-grid #chipGrid3 aria-label="Sub-Category">
+            <mat-chip-row *ngFor="let chip of selectedSubCatgoryChips" [removable]="true"
+              (removed)="removeSubcategoryChip(chip)">
+              {{ chip }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+
+            <input #subCategoryChipInput [formControl]="subCatgoryChipCtrl" [matChipInputFor]="chipGrid3"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matAutocomplete]="auto3"
+              (matChipInputTokenEnd)="addSubcategoryChip($event)" placeholder="Sub-Category" />
+          </mat-chip-grid>
+
+          <mat-autocomplete #auto3="matAutocomplete" (optionSelected)="selectedSubcategoryChip($event)">
+            <mat-option *ngFor="let option of filteredSubCatgoryOptions | async" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-chip-grid #chipGrid4 aria-label="Tags">
+            <mat-chip-row *ngFor="let chip of selectedTagsChips" [removable]="true" (removed)="removeTagsChip(chip)">
+              {{ chip }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+
+            <input #tagsChipInput [formControl]="tagsChipCtrl" [matChipInputFor]="chipGrid4"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matAutocomplete]="auto4"
+              (matChipInputTokenEnd)="addTagsChip($event)" placeholder="Tags" />
+          </mat-chip-grid>
+
+          <mat-autocomplete #auto4="matAutocomplete" (optionSelected)="selectedChip4($event)">
+            <mat-option *ngFor="let option of filteredTagsOptions | async" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <button mat-icon-button matSuffix (click)="resetFilter()" [attr.aria-label]="'Toggle sort direction'">
+          <mat-icon>refresh</mat-icon>
+        </button>
+
+      </form>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="problems-content">
+
+        <div style="margin-bottom: 16px;">
+          <b style="color: orangered;">Problems : ( {{ flatProblems.length }} / {{ totalProblems }} ) </b>
+        </div>
+
+        <table mat-table [dataSource]="flatProblems" class="mat-elevation-z8">
+
+          <!-- ID Column -->
+          <!-- <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+          </ng-container> -->
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="difficulty">
+            <th mat-header-cell *matHeaderCellDef>Difficulty</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="badge" [ngClass]="element.difficulty">{{element.difficulty}}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="category_name">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let element">{{element.category_name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="subcategory_name">
+            <th mat-header-cell *matHeaderCellDef>Subcategory</th>
+            <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="tuf_link">
+            <th mat-header-cell *matHeaderCellDef>tuf+</th>
+            <td mat-cell *matCellDef="let element">
+              <a target="_blank"
+                href="https://takeuforward.org/plus/dsa/{{element.category_slug}}/{{element.subcategory_slug}}/{{element.problem_slug}}?tab=editorial">
+                <img src="./assets/img/tufplus.svg" />
+              </a>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="problem_name">
+            <th mat-header-cell *matHeaderCellDef>Problem</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.problem_name}}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>
