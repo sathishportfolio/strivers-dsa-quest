@@ -82,12 +82,13 @@ export interface FlatProblem {
     interview_followup_questions: InterviewFollowup[];
     problem_type: string;
     hasIDE: boolean;
+    isDone: boolean;
 }
 
 // Data Transformation Utility
 export class ProblemFlattener {
 
-    static flatten(allSyllabus: AllSyllabus): FlatProblem[] {
+    static flatten(allSyllabus: AllSyllabus, progress: string[]): FlatProblem[] {
         return allSyllabus.all_syllabus.all_syllabus.flatMap(category =>
             category.subcategories.flatMap(subcategory =>
                 subcategory.problems.map(problem => {
@@ -115,6 +116,7 @@ export class ProblemFlattener {
                         problem_rank: problem.problem_rank,
                         problem_type: problem.problem_type,
                         hasIDE: problem.hasIDE,
+                        isDone: progress.includes(problem.problem_id),
 
                         // Handle misc properties (with fallbacks)
                         tags: this.getTags(misc),
@@ -133,6 +135,7 @@ export class ProblemFlattener {
     static flattenAndFilter(
         searchTerm: string,
         allSyllabus: AllSyllabus,
+        progress: string[],
         selectedDifficultyChips: string[],
         selectedCategorychips: string[],
         selectedSubCatgoryChips: string[],
@@ -167,6 +170,7 @@ export class ProblemFlattener {
                             problem_rank: problem.problem_rank,
                             problem_type: problem.problem_type,
                             hasIDE: problem.hasIDE,
+                            isDone: progress.includes(problem.problem_id),
 
                             // Misc properties
                             tags: this.getTags(misc) || [],

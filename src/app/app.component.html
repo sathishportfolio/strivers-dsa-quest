@@ -146,7 +146,11 @@
       <div class="problems-content">
 
         <div style="margin-bottom: 16px;">
-          <b style="color: orangered;">Problems : ( {{ flatProblems.length }} / {{ totalProblems }} ) </b>
+          <b style="color: orangered;">
+            Filtered {{flatProblems.length}} problems: {{ doneCount }} completed, {{ notDoneCount }} remaining, out of a
+            total of {{ totalProblems }} problems
+          </b>
+
         </div>
 
         <table mat-table [dataSource]="flatProblems" class="mat-elevation-z8">
@@ -157,10 +161,17 @@
             <td mat-cell *matCellDef="let element">{{element.id}}</td>
           </ng-container> -->
 
-          <ng-container matColumnDef="id">
+          <!-- <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>#</th>
             <td mat-cell *matCellDef="let element; let i = index">
               {{ i + 1 }}
+            </td>
+          </ng-container> -->
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox [checked]="element.isDone"></mat-checkbox>
             </td>
           </ng-container>
 

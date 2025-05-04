@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +23,7 @@ import { MatTableModule } from '@angular/material/table';
 // Custom imports
 import { AllSyllabus, FlatProblem, ProblemFlattener } from './models/AllSyllabus';
 import data from '../assets/tuf.json';
+import progressData from '../assets/tuf_progress.json';
 import { ProblemUtils } from './utils/ProblemUtils';
 
 @Component({
@@ -41,6 +43,7 @@ import { ProblemUtils } from './utils/ProblemUtils';
     MatAutocompleteModule,
     MatSelectModule,
     MatTableModule,
+    MatCheckboxModule
     // MatBadgeModule
   ],
   templateUrl: './app.component.html',
@@ -53,6 +56,9 @@ export class AppComponent {
   totalProblems: number = 0;
 
   allSyllabus: AllSyllabus = data;
+
+  progressData: any = progressData;
+  progress: string[] = [];
 
   flatProblems: FlatProblem[] = [];
 
@@ -123,7 +129,8 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.flatProblems = ProblemFlattener.flatten(this.allSyllabus);
+    this.progress = Object.keys(this.progressData.result);
+    this.flatProblems = ProblemFlattener.flatten(this.allSyllabus, this.progress);
     this.totalProblems = this.flatProblems.length;
     this.difficultiesList = ProblemUtils.getUniqueDifficulties(this.flatProblems);
     this.categoriesList = ProblemUtils.getUniqueCategoryNames(this.flatProblems);
@@ -133,8 +140,16 @@ export class AppComponent {
 
   /* HELPER FUNCTIONS */
 
+  get doneCount(): number {
+    return this.flatProblems.filter(problem => problem.isDone).length;
+  }
+
+  get notDoneCount(): number {
+    return this.flatProblems.filter(problem => !problem.isDone).length;
+  }
+
   private filterProblems(selectedDifficultyChips: string[], selectedCategorychips: string[], selectedSubCatgoryChips: string[], selectedTagsChips: string[], sortBy: string, order: string) {
-    this.flatProblems = ProblemFlattener.flattenAndFilter(this.searchTerm, this.allSyllabus, selectedDifficultyChips, selectedCategorychips, selectedSubCatgoryChips, selectedTagsChips, sortBy, order);
+    this.flatProblems = ProblemFlattener.flattenAndFilter(this.searchTerm, this.allSyllabus, this.progress, selectedDifficultyChips, selectedCategorychips, selectedSubCatgoryChips, selectedTagsChips, sortBy, order);
   }
 
   // Generic chips filter function

@@ -86,3 +86,56 @@ td.mat-cell {
 .Unknown {
     background-color: darkslategray;
 }
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox {
+    width: 25px !important;
+    min-width: 25px !important;
+    position: relative;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__background {
+    border-radius: 50% !important;
+    border: 2px dotted #999 !important;
+    width: 25px !important;
+    height: 25px !important;
+    background: transparent !important;
+    box-sizing: border-box;
+    transition: background 0.2s;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+::ng-deep .mdc-checkbox__ripple {
+    width: 25px !important;
+    height: 25px !important;
+    border-radius: 50% !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* Change background and border when checked */
+::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background {
+    background-color: #4CAF50 !important;
+    border: none !important;
+}
+
+/* Hide the default SVG checkmark path */
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__checkmark-path {
+    display: none !important;
+}
+
+/* Custom tick styling */
+::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__checkmark {
+    left: 8px !important;
+    top: 3px !important;
+    width: 6px !important;
+    height: 13px !important;
+    border: solid white !important;
+    border-width: 0 3px 3px 0 !important;
+    transform: rotate(45deg) scale(1.1) !important;
+    background: none !important;
+    opacity: 1 !important;
+}
