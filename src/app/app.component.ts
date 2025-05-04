@@ -65,6 +65,7 @@ export class AppComponent {
   // sortBy: string[] = ['difficulty', 'category_id', 'subcategory_id', 'problem_id'];
   sortByOptions = [
     { key: 'difficulty', value: 'Difficulty' },
+    { key: 'isDone', value: 'Status' },
     { key: 'category_id', value: 'Category' },
     { key: 'subcategory_id', value: 'Subcategory' },
     { key: 'problem_id', value: 'Problem' }
@@ -132,7 +133,8 @@ export class AppComponent {
     this.progress = Object.keys(this.progressData.result);
     this.flatProblems = ProblemFlattener.flatten(this.allSyllabus, this.progress);
     this.totalProblems = this.flatProblems.length;
-    this.difficultiesList = ProblemUtils.getUniqueDifficulties(this.flatProblems);
+    // this.difficultiesList = ProblemUtils.getUniqueDifficulties(this.flatProblems);
+    this.difficultiesList = ["Easy", "Medium", "Hard", "Unknown"];
     this.categoriesList = ProblemUtils.getUniqueCategoryNames(this.flatProblems);
     this.subcategoriesList = ProblemUtils.getUniqueSubCategoryNames(this.flatProblems);
     this.tagsList = ProblemUtils.getUniqueTags(this.flatProblems);
@@ -180,6 +182,7 @@ export class AppComponent {
 
   private filterProblems(selectedDifficultyChips: string[], selectedCategorychips: string[], selectedSubCatgoryChips: string[], selectedTagsChips: string[], sortBy: string, order: string) {
     this.flatProblems = ProblemFlattener.flattenAndFilter(this.searchTerm, this.allSyllabus, this.progress, selectedDifficultyChips, selectedCategorychips, selectedSubCatgoryChips, selectedTagsChips, sortBy, order);
+    this.sortFlatProblems();
     this.updateLocalStorage();
   }
 
@@ -220,22 +223,45 @@ export class AppComponent {
     window.location.reload();
   }
 
+  // sortFlatProblems() {
+  //   debugger
+  //   this.flatProblems.sort((a, b) => {
+  //     const field = this.selectedsortBy;
+  //     let valueA = (a as any)[field];
+  //     let valueB = (b as any)[field];
+
+  //     if (typeof valueA === 'string' && typeof valueB === 'string') {
+  //       valueA = valueA.toLowerCase();
+  //       valueB = valueB.toLowerCase();
+  //     }
+
+  //     if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
+  //     if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
+  //     return 0;
+  //   });
+  //   this.flatProblems = [...this.flatProblems];
+  // }
+
   sortFlatProblems() {
-    // Step 1: Filter
-    let filtered = this.flatProblems.filter(problem => {
-      const term = this.searchTerm.trim().toLowerCase();
-      return (
-        problem.problem_id.toLowerCase().includes(term) ||
-        problem.problem_name.toLowerCase().includes(term) ||
-        problem.problem_slug.toLowerCase().includes(term)
-      );
-    });
+    const field = this.selectedsortBy;
+
+    // Custom order for 'status'
+    const statusOrder = ["Easy", "Medium", "Unknown", "Hard"];
 
     this.flatProblems.sort((a, b) => {
-      const field = this.selectedsortBy;
       let valueA = (a as any)[field];
       let valueB = (b as any)[field];
 
+      // Custom sort for 'status'
+      if (field === 'difficulty') {
+        const indexA = statusOrder.indexOf(valueA);
+        const indexB = statusOrder.indexOf(valueB);
+        if (indexA < indexB) return this.sortDirection === 'asc' ? -1 : 1;
+        if (indexA > indexB) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      }
+
+      // Default sort for other fields
       if (typeof valueA === 'string' && typeof valueB === 'string') {
         valueA = valueA.toLowerCase();
         valueB = valueB.toLowerCase();
@@ -246,9 +272,9 @@ export class AppComponent {
       return 0;
     });
 
-    // Step 3: Update displayed data
     this.flatProblems = [...this.flatProblems];
   }
+
 
 
   // --- Difficulty chip grid handlers ---
