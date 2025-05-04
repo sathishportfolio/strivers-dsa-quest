@@ -136,6 +136,32 @@ export class AppComponent {
     this.categoriesList = ProblemUtils.getUniqueCategoryNames(this.flatProblems);
     this.subcategoriesList = ProblemUtils.getUniqueSubCategoryNames(this.flatProblems);
     this.tagsList = ProblemUtils.getUniqueTags(this.flatProblems);
+
+    const saved = localStorage.getItem('myAppState');
+    if (saved) {
+      const state = JSON.parse(saved);
+      this.searchTerm = state.searchTerm;
+      this.allSyllabus = state.allSyllabus;
+      this.progress = state.progress;
+      this.selectedDifficultyChips = state.selectedDifficultyChips;
+      this.selectedCategorychips = state.selectedCategorychips;
+      this.selectedSubCatgoryChips = state.selectedSubCatgoryChips;
+      this.selectedTagsChips = state.selectedTagsChips;
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+    }
+  }
+
+  updateLocalStorage() {
+    const state = {
+      searchTerm: this.searchTerm,
+      allSyllabus: this.allSyllabus,
+      progress: this.progress,
+      selectedDifficultyChips: this.selectedDifficultyChips,
+      selectedCategorychips: this.selectedCategorychips,
+      selectedSubCatgoryChips: this.selectedSubCatgoryChips,
+      selectedTagsChips: this.selectedTagsChips
+    };
+    localStorage.setItem('myAppState', JSON.stringify(state));
   }
 
   /* HELPER FUNCTIONS */
@@ -150,6 +176,7 @@ export class AppComponent {
 
   private filterProblems(selectedDifficultyChips: string[], selectedCategorychips: string[], selectedSubCatgoryChips: string[], selectedTagsChips: string[], sortBy: string, order: string) {
     this.flatProblems = ProblemFlattener.flattenAndFilter(this.searchTerm, this.allSyllabus, this.progress, selectedDifficultyChips, selectedCategorychips, selectedSubCatgoryChips, selectedTagsChips, sortBy, order);
+    this.updateLocalStorage();
   }
 
   // Generic chips filter function
