@@ -146,27 +146,11 @@
       <div class="problems-content">
 
         <div style="margin-bottom: 16px;">
-          <b style="color: orangered;">
-            Filtered {{flatProblems.length}} problems: {{ doneCount }} completed, {{ notDoneCount }} remaining, out of a
-            total of {{ totalProblems }} problems
-          </b>
-
+          <b style="color: orangered;"> Filtered Problems ( {{flatProblems.length}} / {{ totalProblems }} ) :
+            {{doneCount}} Solved - {{ notDoneCount }} remaining </b>
         </div>
 
         <table mat-table [dataSource]="flatProblems" class="mat-elevation-z8">
-
-          <!-- ID Column -->
-          <!-- <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>#</th>
-            <td mat-cell *matCellDef="let element">{{element.id}}</td>
-          </ng-container> -->
-
-          <!-- <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>#</th>
-            <td mat-cell *matCellDef="let element; let i = index">
-              {{ i + 1 }}
-            </td>
-          </ng-container> -->
 
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Status</th>
