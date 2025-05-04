@@ -216,7 +216,8 @@ export class AppComponent {
     this.selectedTagsChips = [];
     this.selectedsortBy = this.sortByOptions[0].key;
     this.sortDirection = 'asc';
-    this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
+    this.updateLocalStorage();
+    window.location.reload();
   }
 
   sortFlatProblems() {
