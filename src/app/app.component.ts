@@ -137,7 +137,7 @@ export class AppComponent {
     this.subcategoriesList = ProblemUtils.getUniqueSubCategoryNames(this.flatProblems);
     this.tagsList = ProblemUtils.getUniqueTags(this.flatProblems);
 
-    const saved = localStorage.getItem('myAppState');
+    const saved = localStorage.getItem('strivers-dsa-quest');
     if (saved) {
       const state = JSON.parse(saved);
       this.searchTerm = state.searchTerm;
@@ -147,7 +147,9 @@ export class AppComponent {
       this.selectedCategorychips = state.selectedCategorychips;
       this.selectedSubCatgoryChips = state.selectedSubCatgoryChips;
       this.selectedTagsChips = state.selectedTagsChips;
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.selectedsortBy = state.selectedsortBy;
+      this.sortDirection = state.sortDirection;
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
   }
 
@@ -159,9 +161,11 @@ export class AppComponent {
       selectedDifficultyChips: this.selectedDifficultyChips,
       selectedCategorychips: this.selectedCategorychips,
       selectedSubCatgoryChips: this.selectedSubCatgoryChips,
-      selectedTagsChips: this.selectedTagsChips
+      selectedTagsChips: this.selectedTagsChips,
+      selectedsortBy: this.selectedsortBy,
+      sortDirection: this.sortDirection
     };
-    localStorage.setItem('myAppState', JSON.stringify(state));
+    localStorage.setItem('strivers-dsa-quest', JSON.stringify(state));
   }
 
   /* HELPER FUNCTIONS */
@@ -188,18 +192,20 @@ export class AppComponent {
   }
 
   onSearch() {
-    this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+    this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     this.flatProblems = [...this.flatProblems];
   }
 
   onSortChange(selectedKey: string) {
     this.selectedsortBy = selectedKey;
     this.sortFlatProblems();
+    this.updateLocalStorage();
   }
 
   toggleSortDirection() {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     this.sortFlatProblems();
+    this.updateLocalStorage();
   }
 
   resetFilter() {
@@ -210,7 +216,7 @@ export class AppComponent {
     this.selectedTagsChips = [];
     this.selectedsortBy = this.sortByOptions[0].key;
     this.sortDirection = 'asc';
-    this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+    this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
   }
 
   sortFlatProblems() {
@@ -260,7 +266,7 @@ export class AppComponent {
     const index = this.selectedDifficultyChips.indexOf(chip);
     if (index >= 0) {
       this.selectedDifficultyChips.splice(index, 1);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.difficultyChipCtrl.setValue(null);
   }
@@ -269,7 +275,7 @@ export class AppComponent {
     const value = event.option.viewValue;
     if (!this.selectedDifficultyChips.includes(value)) {
       this.selectedDifficultyChips.push(value);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.difficultyChipInput.nativeElement.value = '';
     this.difficultyChipCtrl.setValue(null);
@@ -291,7 +297,7 @@ export class AppComponent {
     const index = this.selectedCategorychips.indexOf(chip);
     if (index >= 0) {
       this.selectedCategorychips.splice(index, 1);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.categoryChipCtrl.setValue(null);
   }
@@ -300,7 +306,7 @@ export class AppComponent {
     const value = event.option.viewValue;
     if (!this.selectedCategorychips.includes(value)) {
       this.selectedCategorychips.push(value);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.CategoryChipInput.nativeElement.value = '';
     this.categoryChipCtrl.setValue(null);
@@ -322,7 +328,7 @@ export class AppComponent {
     const index = this.selectedSubCatgoryChips.indexOf(chip);
     if (index >= 0) {
       this.selectedSubCatgoryChips.splice(index, 1);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.subCatgoryChipCtrl.setValue(null);
   }
@@ -331,7 +337,7 @@ export class AppComponent {
     const value = event.option.viewValue;
     if (!this.selectedSubCatgoryChips.includes(value)) {
       this.selectedSubCatgoryChips.push(value);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.subCategoryChipInput.nativeElement.value = '';
     this.subCatgoryChipCtrl.setValue(null);
@@ -353,7 +359,7 @@ export class AppComponent {
     const index = this.selectedTagsChips.indexOf(chip);
     if (index >= 0) {
       this.selectedTagsChips.splice(index, 1);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.tagsChipCtrl.setValue(null);
   }
@@ -362,7 +368,7 @@ export class AppComponent {
     const value = event.option.viewValue;
     if (!this.selectedTagsChips.includes(value)) {
       this.selectedTagsChips.push(value);
-      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, 'problemName', 'asc');
+      this.filterProblems(this.selectedDifficultyChips, this.selectedCategorychips, this.selectedSubCatgoryChips, this.selectedTagsChips, this.selectedsortBy, this.sortDirection);
     }
     this.tagsChipInput.nativeElement.value = '';
     this.tagsChipCtrl.setValue(null);
